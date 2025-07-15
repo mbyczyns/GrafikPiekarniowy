@@ -26,3 +26,4 @@ workers = cf.get_workers_data(dyspo)
 
 for day in month:
     print(day.name, day.number)
+    print('-------')
