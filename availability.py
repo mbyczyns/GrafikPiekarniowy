@@ -37,6 +37,7 @@ workers_data = cf.get_workers_data(workers_info=dyspo, month=month)
 
 for worker in workers_data:
     print(worker.name)
+    print(worker.working_days)
     for sh in worker.availability:
         print(sh.day.number, sh.day.name, sh.time_of_day)
     print('')

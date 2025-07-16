@@ -20,6 +20,7 @@ class shift:
 
     def assign_worker(self, worker):
         self.assigned_worker=worker
+        worker.working_days+=1
 
 
 def get_next_month():
@@ -82,4 +83,11 @@ def get_workers_data(workers_info, month):
                 worker_availability.append(sh1)
         workers.append(worker(name=workername,availability=worker_availability))
     return workers
+
+
+def sort_workers_by_working_days(workers_info):
+    return sorted(workers_info, key=lambda w: w.working_days)
+
+
+# def assign_shifts(workers_data, shifts):
 
