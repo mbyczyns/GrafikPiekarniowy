@@ -6,6 +6,12 @@ class worker:
         self.name=name
         self.availability = availability
         self.working_days = 0
+    
+    def is_available_for(self, shift):
+        for s in self.availability:
+            if s.day.number == shift.day.number and s.time_of_day == shift.time_of_day:
+                return True
+        return False
 
 class day:
     def __init__(self,name, number):
@@ -21,6 +27,10 @@ class shift:
     def assign_worker(self, worker):
         self.assigned_worker=worker
         worker.working_days+=1
+
+    def is_assigned(self):
+        if self.assigned_worker==None: return 0
+        else: return 1
 
 
 def get_next_month():
@@ -68,7 +78,7 @@ def get_shifts(month):
     return shifts
 
 
-def get_workers_data(workers_info, month):
+def parse_workers_data(workers_info, month):
     workers = []
     for person in workers_info['pracownicy']:
         workername = person['imie']
@@ -89,5 +99,28 @@ def sort_workers_by_working_days(workers_info):
     return sorted(workers_info, key=lambda w: w.working_days)
 
 
-# def assign_shifts(workers_data, shifts):
+def assign_shifts(workers_data, shifts):
+    it_shifts = iter(shifts)
+    shift_pairs = list(zip(it_shifts, it_shifts)) 
+
+    for sh_morning, sh_afternoon in shift_pairs:
+        workers_data = sort_workers_by_working_days(workers_data)
+        for wrk in workers_data:
+            if wrk.is_available_for(sh_morning):
+                sh_morning.assign_worker(wrk)
+                morning_worker = wrk
+                break
+
+        workers_data = sort_workers_by_working_days(workers_data)
+
+        for wrk in workers_data:
+            if (wrk.is_available_for(sh_afternoon) and wrk != morning_worker) or wrk.name=='Mr. Nobody':
+                sh_afternoon.assign_worker(wrk)
+                break
+
+    all_shifts = [sh for pair in shift_pairs for sh in pair]
+    return all_shifts
+
+
+    
 
