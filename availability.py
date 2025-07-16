@@ -22,8 +22,21 @@ dyspo = {
 }
 
 month = cf.get_next_month()
-workers = cf.get_workers_data(dyspo)
 
-for day in month:
-    print(day.name, day.number)
-    print('-------')
+# for day in month:
+#     print(day.name, day.number)
+#     print('-------')
+
+
+
+shifts = cf.get_shifts(month)
+# for sh in shifts:
+#     print(sh.day.name,sh.day.number, sh.time_of_day)
+
+workers_data = cf.get_workers_data(workers_info=dyspo, month=month)
+
+for worker in workers_data:
+    print(worker.name)
+    for sh in worker.availability:
+        print(sh.day.number, sh.day.name, sh.time_of_day)
+    print('')

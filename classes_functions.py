@@ -56,10 +56,30 @@ def get_next_month():
     return month
 
 
+def get_shifts(month):
+    shifts = []
+    for d in month:
+        if d.name != 'sunday':
+            sh = shift(d, 'morning')
+            sh2 = shift(d, 'afternoon')
+            shifts.append(sh)
+            shifts.append(sh2)
+    return shifts
 
-def get_workers_data(workers_info):
+
+def get_workers_data(workers_info, month):
     workers = []
     for person in workers_info['pracownicy']:
-        workers.append(worker(name=person['imie'], availability=person['dyspozycyjnosc']))
+        workername = person['imie']
+        worker_availability=[]
+        for idx, availability_day in enumerate(person['dyspozycyjnosc']):
+            day_nr = next(filter(lambda d: d.number == idx+1, month), None)
+            if availability_day['rano']==1: 
+                sh1 = shift(day=day_nr,time_of_day='morning')
+                worker_availability.append(sh1)
+            if availability_day['popo']==1:
+                sh1 = shift(day=day_nr,time_of_day='afternoon')
+                worker_availability.append(sh1)
+        workers.append(worker(name=workername,availability=worker_availability))
     return workers
 
